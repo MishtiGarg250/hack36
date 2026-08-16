@@ -98,7 +98,7 @@ const PatientOnboardingForm = () => {
   const handleSubmit = async (): Promise<void> => {
     try {
       await updateProfile({
-        Phone: formData.phone,
+        phone: formData.phone,
         dob: formData.dob,
         gender: formData.gender,
         bloodGroup: formData.bloodGroup,
@@ -399,7 +399,12 @@ const PatientOnboardingForm = () => {
               <Button
                type="button"
                onClick={handleSubmit}
-               disabled={loading}
+               disabled={
+                 loading ||
+                 !formData.medicalHistory.allergies ||
+                 !formData.medicalHistory.chronicConditions ||
+                 !formData.medicalHistory.currentMedications
+               }
                className="bg-[#1e6190] hover:bg-[#52b69a] rounded-full"
               >
                 {loading ? "Completing Setup...": "Complete Profile"}
