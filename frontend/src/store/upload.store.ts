@@ -1,8 +1,8 @@
 import { postWithAuth } from "@/service/httpService";
 
-interface UploadState{
-    file:?.formdata
+interface UploadState {
+    file?: FormData;
 }
-export const uploadStore = <UploadState>{
-    
+export const uploadStore: UploadState = {
+
 }

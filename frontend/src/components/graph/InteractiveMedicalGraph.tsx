@@ -179,6 +179,8 @@ export default function InteractiveMedicalGraph({
         const node = nodes[i];
         if (node === draggedNodeRef.current) continue; // Don't apply physics to dragged node
         if (!node.x || !node.y) continue;
+        const nodeX = node.x;
+        const nodeY = node.y;
 
         let fx = 0,
           fy = 0;
@@ -188,8 +190,8 @@ export default function InteractiveMedicalGraph({
           if (i === j) continue;
           const other = nodes[j];
           if (!other.x || !other.y) continue;
-          const dx = node.x - other.x;
-          const dy = node.y - other.y;
+          const dx = nodeX - other.x;
+          const dy = nodeY - other.y;
           const dist2 = dx * dx + dy * dy + 0.1; // avoid division by zero
           const force = repulsion / dist2;
           fx += (dx / Math.sqrt(dist2)) * force;
@@ -206,8 +208,8 @@ export default function InteractiveMedicalGraph({
           }
 
           if (target && target.x && target.y) {
-            const dx = target.x - node.x;
-            const dy = target.y - node.y;
+            const dx = target.x - nodeX;
+            const dy = target.y - nodeY;
             const dist = Math.hypot(dx, dy) + 1e-6; // current length
 
             const baseRestLength = 150; // Base spring length
@@ -228,8 +230,8 @@ export default function InteractiveMedicalGraph({
         // --- END MODIFICATION ---
 
         // Center force
-        fx += (WIDTH / 2 - node.x) * centerForce;
-        fy += (HEIGHT / 2 - node.y) * centerForce;
+        fx += (WIDTH / 2 - nodeX) * centerForce;
+        fy += (HEIGHT / 2 - nodeY) * centerForce;
 
         node.vx = (node.vx || 0) * damping + fx;
         node.vy = (node.vy || 0) * damping + fy;
@@ -250,7 +252,9 @@ export default function InteractiveMedicalGraph({
     };
 
     step();
-    return () => rafRef.current && cancelAnimationFrame(rafRef.current);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [graph, paused]); // Re-run if graph changes or pause state toggles
 
   // --- MODIFIED: Draw function ---
